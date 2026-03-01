@@ -2,7 +2,7 @@
   "id": "hide-icons-vault",
   "title": "Hide Icons Vault",
   "version": "1.0.0",
-  "description": "Hide Icons Vault lets you hide unwanted icons from the Layers Control bar and the Sidebar tabs bar, storing them in a compact vault panel. Hidden layer and tool icons can be activated directly from the vault without being restored. Drag to hide, drag back or right-click to restore. Fully per-client — each user manages their own vault independently.",
+  "description": "Hide Icons Vault lets you hide less used icons from the Layers Control bar and the Sidebar tabs bar, storing them in a compact vault panel. Hidden layer and tool icons can be activated directly from the vault without being restored. Drag to hide, drag back or right-click to restore. Fully per-client — each user manages their own vault independently.",
   "authors": [
     {
       "name": "Erich Matos Viegas"
@@ -37,5 +37,8 @@
     "minimum": "13",
     "verified": "13.351"
   },
-  "flags": {}
+  "flags": {},
+  "url": "https://github.com/jacksands/hide-icons-vault",
+  "manifest": "https://raw.githubusercontent.com/jacksands/hide-icons-vault/refs/heads/main/module.json",
+  "download": "https://github.com/jacksands/hide-icons-vault/archive/refs/heads/main.zip"
 }
