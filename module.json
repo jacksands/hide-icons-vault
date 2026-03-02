@@ -5,7 +5,7 @@
   "description": "Hide Icons Vault lets you hide less used icons from the Layers Control bar and the Sidebar tabs bar, storing them in a compact vault panel. Hidden layer and tool icons can be activated directly from the vault without being restored. Drag to hide, drag back or right-click to restore. Fully per-client — each user manages their own vault independently.",
   "authors": [
     {
-      "name": "Erich Matos Viegas"
+      "name": "Jack_Sands"
     }
   ],
   "esmodules": [
