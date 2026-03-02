@@ -117,6 +117,11 @@ The **Color** option includes a color picker in Module Settings. The same badge 
 
 ---
 
+| ⚠️ IMPORTANT |
+|-------------|
+| Hide Icons Vault detects controls using standard Foundry HTML attributes. Modules that inject controls with non-standard structures such as Mass Edit and Notebook (in this date) may not be draggable or may not hide correctly. Installing **lib-wrapper** is recommended to reduce conflicts with other modules that patch the same Foundry methods. |
+
+
 # License
 
 legal code: https://creativecommons.org/licenses/by-nc/4.0/
