@@ -1,5 +1,4 @@
-# 🔒 Hide Icons Vault – Version 1.0.0
-
+# 🔒 Hide Icons Vault 
 
 **Hide Icons Vault** lets you declutter your Foundry VTT interface by hiding less used icons from the Layers Control bar and the Sidebar tabs bar. Hidden icons are stored in a compact vault panel and can be activated at any time without being restored to the bar.
 

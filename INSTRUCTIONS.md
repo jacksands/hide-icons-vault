@@ -1,4 +1,4 @@
-# Hide Icons Vault v1.0.0 — Instructions
+# Hide Icons Vault — Instructions
 
 ## What it does
 
