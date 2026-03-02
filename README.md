@@ -1,8 +1,7 @@
 # 🔒 Hide Icons Vault – Version 1.0.0
 
-<!-- screenshot-logo -->
 
-**Hide Icons Vault** lets you declutter your Foundry VTT interface by hiding unwanted icons from the Layers Control bar and the Sidebar tabs bar. Hidden icons are stored in a compact vault panel and can be activated at any time without being restored to the bar.
+**Hide Icons Vault** lets you declutter your Foundry VTT interface by hiding less used icons from the Layers Control bar and the Sidebar tabs bar. Hidden icons are stored in a compact vault panel and can be activated at any time without being restored to the bar.
 
 All settings are **per-client** — each user manages their own vault independently, with no effect on other players.
 
@@ -12,7 +11,8 @@ All settings are **per-client** — each user manages their own vault independen
 
 The Layers Control Vault adds a vault button (🔒) to the Layers Control bar on the left side of the screen.
 
-<!-- screenshot-layers-vault -->
+![vault1-intro](https://github.com/user-attachments/assets/5e6ed84b-306c-4125-8d05-dafe3fff071a)
+
 
 ### Hiding Layers and Tools
 
@@ -21,6 +21,9 @@ The Layers Control Vault adds a vault button (🔒) to the Layers Control bar on
 3. The icon disappears from the bar and the badge on the vault button updates.
 
 > Hiding a *layer* removes it **and all its tools** from the bar.
+
+![vault2-tools](https://github.com/user-attachments/assets/028828f4-4edf-4464-9951-cbc19b82a53c)
+
 
 ### Using the Vault Panel
 
@@ -31,7 +34,6 @@ Click the vault button to open the panel:
 - **Right-click** any icon to restore it to the bar immediately.
 - **↺** in the panel header restores everything at once (with confirmation).
 
-<!-- screenshot-vault-panel -->
 
 ### Restoring Icons
 
@@ -41,6 +43,9 @@ Click the vault button to open the panel:
 | **Drag out** | Drag an icon from the vault panel back onto the Layers Control bar |
 | **Reset All** | Click ↺ in the panel header, or use **Reset All Hidden Icons** in Module Settings |
 
+![vault2-restore](https://github.com/user-attachments/assets/5cf55e37-1243-4b12-9969-ba4641833075)
+
+
 ---
 
 ## 🗃 Sidebar Tab Vault
@@ -49,7 +54,12 @@ The Sidebar Tab Vault is **disabled by default**. Enable it in **Module Settings
 
 Once enabled, a vault button (🔒) appears at the bottom of the sidebar tabs bar on the right side of the screen.
 
-<!-- screenshot-tab-vault -->
+
+
+![vault2-sidebar](https://github.com/user-attachments/assets/506d01bc-41b8-42c0-9acb-c122b8ef9ed6)
+
+
+
 
 ### Hiding Tabs
 
@@ -69,7 +79,8 @@ Once enabled, a vault button (🔒) appears at the bottom of the sidebar tabs ba
 
 The vault button shows a visual indicator when it has hidden items. Choose your preferred style in **Module Settings → Vault Badge Style**:
 
-<!-- screenshot-badge-styles -->
+<img width="130" height="99" alt="image" src="https://github.com/user-attachments/assets/2eb4d9c0-78ff-4f5b-b92a-f59d7378d575" />
+
 
 | Style | Description |
 |---|---|
@@ -84,7 +95,7 @@ The **Color** option includes a color picker in Module Settings. The same badge 
 
 ## ⚙ Module Settings
 
-<!-- screenshot-settings -->
+
 
 | Setting | Description |
 |---|---|
