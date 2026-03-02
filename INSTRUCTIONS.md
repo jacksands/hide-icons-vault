@@ -36,7 +36,8 @@ Click the vault button to open the panel:
 |---|---|
 | **Right-click** | Right-click any icon in the vault panel |
 | **Drag out** | Drag an icon from the vault panel onto the Layers Control bar |
-| **Reset All** | Click ↺ in the panel header, or use **Reset All Hidden Icons** in Module Settings |
+| **↺ (panel)** | Restores all icons from *that vault only* |
+| **Reset All** | **Module Settings → Reset All Hidden Icons** restores *both vaults at once* |
 
 ---
 
@@ -80,7 +81,7 @@ The same badge style applies to both the Layers Control Vault and the Sidebar Ta
 | Setting | Description |
 |---|---|
 | **Open Instructions** | Opens this dialog |
-| **Reset All Hidden Icons** | Restores every hidden layer/tool icon to the Layers Control bar |
+| **Reset All Hidden Icons** | Restores every hidden icon and tab — resets both vaults at once |
 | **Vault Button Position** | Place the layers vault button at the top or bottom of the bar |
 | **Show section labels** | Toggle section headers inside the layers vault panel |
 | **Vault Badge Style** | Choose how the vault button indicates hidden items (Count / Dot / Color / None) |
@@ -95,3 +96,9 @@ The same badge style applies to both the Layers Control Vault and the Sidebar Ta
 - Vault badges show the count of currently hidden icons/tabs.
 - If a hidden icon no longer exists (e.g. a module was disabled), it is automatically removed from the vault on the next load.
 - All data is saved per client. Other users keep their own vault settings.
+
+---
+
+## ⚠️ Known Limitations
+
+Hide Icons Vault detects controls using standard Foundry HTML attributes. Modules that inject controls with non-standard structures — such as **Mass Edit** and **Notebook** (at this date) — may not be draggable or may not hide correctly. Installing **lib-wrapper** is recommended to reduce conflicts with other modules that patch the same Foundry methods.

@@ -130,25 +130,51 @@
 /* ── Instructions dialog ─────────────────────────────────────────────────── */
 .hiv-instructions {
   padding: 14px 16px; max-width: 430px;
-  font-size: 13px; line-height: 1.55; color: #ccc;
+  font-size: 14px; line-height: 1.6; color: #ccc;
+  max-height: 65vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.2) transparent;
+  padding-right: 10px;
 }
-.hiv-instr-section { margin-bottom: 13px; }
-.hiv-instr-section:last-child { margin-bottom: 0; }
-.hiv-instr-section p { margin: 0 0 4px; }
-.hiv-instr-section ul { margin: 4px 0 0; padding-left: 18px; }
-.hiv-instr-section li { margin-bottom: 4px; }
-.hiv-instr-heading {
-  font-weight: 700; font-size: 11px; text-transform: uppercase;
-  letter-spacing: .07em; color: #e0c97a; margin-bottom: 5px;
-  display: flex; align-items: center; gap: 6px;
+
+/* ── Markdown-rendered instructions ─────────────────────────────────────── */
+.hiv-instructions--md h1,
+.hiv-instructions--md h2 {
+  font-size: 13px; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--color-level-warning, #c98f00);
+  margin: 14px 0 6px; padding-bottom: 3px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
 }
-.hiv-instructions strong { color: #e8e8e8; }
-.hiv-instructions em { color: #aaa; }
-.hiv-instr-footer {
-  margin-top: 12px; padding-top: 9px;
-  border-top: 1px solid rgba(255,255,255,.12);
-  font-size: 12px; color: #999; font-style: italic;
+.hiv-instructions--md h3 {
+  font-size: 13px; font-weight: 600; color: #ddd;
+  margin: 10px 0 4px;
 }
+.hiv-instructions--md h1:first-child,
+.hiv-instructions--md h2:first-child { margin-top: 0; }
+.hiv-instructions--md p  { margin: 0 0 8px; }
+.hiv-instructions--md ul { margin: 0 0 8px; padding-left: 18px; }
+.hiv-instructions--md li { margin-bottom: 4px; }
+.hiv-instructions--md hr { border: none; border-top: 1px solid rgba(255,255,255,.08); margin: 12px 0; }
+.hiv-instructions--md blockquote {
+  border-left: 3px solid rgba(255,255,255,.15);
+  margin: 0 0 8px; padding: 4px 10px;
+  color: #aaa; font-style: italic;
+}
+.hiv-instructions--md a { color: var(--color-level-warning, #c98f00); }
+.hiv-instructions--md code {
+  background: rgba(255,255,255,.08); border-radius: 3px;
+  padding: 1px 4px; font-size: 12px;
+}
+.hiv-instructions--md table {
+  width: 100%; border-collapse: collapse; margin-bottom: 8px; font-size: 13px;
+}
+.hiv-instructions--md th {
+  background: rgba(255,255,255,.07); padding: 4px 8px;
+  text-align: left; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,.1);
+}
+.hiv-instructions--md td { padding: 4px 8px; border-bottom: 1px solid rgba(255,255,255,.05); }
 
 /* ── Reset dialog ────────────────────────────────────────────────────────── */
 .hiv-reset-dialog {

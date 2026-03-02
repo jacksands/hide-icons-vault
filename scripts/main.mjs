@@ -1,5 +1,5 @@
 /**
- * Hide Icons Vault – main.mjs – v1.0.0
+ * Hide Icons Vault – main.mjs – v1.0.1
  */
 
 const MODULE_ID   = "hide-icons-vault";
@@ -67,62 +67,7 @@ async function sanitizeHiddenData() {
     await saveHidden({ layers: newL, tools: newT });
 }
 
-/* ── Instructions dialog ─────────────────────────────────────────────────── */
-
-function instructionsHTML() {
-  return `<div class="hiv-instructions">
-    <div class="hiv-instr-section">
-      <p><strong>Hide Icons Vault</strong> has two independent vaults:
-      the <strong>Layers Control Vault</strong> (left bar) and the
-      <strong>Sidebar Tab Vault</strong> (right bar, enable in Module Settings).
-      All settings are per-client — no effect on other users.</p>
-    </div>
-
-    <div class="hiv-instr-section">
-      <div class="hiv-instr-heading"><i class="fas fa-map"></i> Layers Control Vault</div>
-      <ul>
-        <li><strong>Drag</strong> any layer or tool icon onto the vault button (🔒) in the Layers Control bar to hide it.</li>
-        <li>Hiding a <em>layer</em> removes it and all its tools from the bar.</li>
-        <li><strong>Click</strong> a hidden layer to activate it. Hover to see its tools in a side sub-panel.</li>
-        <li>Hidden <em>tools</em> are grouped by layer — click the layer icon to expand/collapse.</li>
-        <li><strong>Right-click</strong> any icon to restore it. Or drag it back to the bar.</li>
-      </ul>
-    </div>
-
-    <div class="hiv-instr-section">
-      <div class="hiv-instr-heading"><i class="fas fa-th-list"></i> Sidebar Tab Vault</div>
-      <ul>
-        <li>Enable in <strong>Module Settings → Enable Sidebar Tab Vault</strong>.</li>
-        <li><strong>Drag</strong> any sidebar tab onto the vault button (🔒) in the sidebar tabs bar.</li>
-        <li><strong>Click</strong> a hidden tab to <em>activate</em> it — it stays hidden in the bar.</li>
-        <li><strong>Right-click</strong> or <strong>drag out</strong> to restore a tab to the sidebar bar.</li>
-      </ul>
-    </div>
-
-    <div class="hiv-instr-section">
-      <div class="hiv-instr-heading"><i class="fas fa-undo"></i> Restoring</div>
-      <ul>
-        <li>Use <strong>↺</strong> in either vault panel header to restore all icons from that vault.</li>
-        <li><strong>Reset All Hidden Icons</strong> in Module Settings resets the Layers Control Vault.</li>
-      </ul>
-    </div>
-
-    <div class="hiv-instr-section">
-      <div class="hiv-instr-heading"><i class="fas fa-circle"></i> Badge Style</div>
-      <ul>
-        <li><strong>Count</strong> — shows the number of hidden items (default).</li>
-        <li><strong>Dot</strong> — shows a small dot when the vault has items, without a number.</li>
-        <li><strong>Color</strong> — tints the vault icon with a custom color. Use the color picker in settings to choose your color.</li>
-        <li><strong>None</strong> — no visual indicator on the vault button.</li>
-      </ul>
-      <p>The same badge style applies to both the Layers Control Vault and the Sidebar Tab Vault.</p>
-    </div>
-
-    <div class="hiv-instr-footer">
-      <p>Both vaults are independent. Resetting one does not affect the other.</p>
-    </div>
-  </div>`;
-}
+/* ── Instructions dialog — rendered from INSTRUCTIONS.md ─────────────────── */
 
 class HIVInstructionsMenu extends foundry.applications.api.ApplicationV2 {
   static DEFAULT_OPTIONS = { id: "hiv-instructions-menu", window: { title: "Hide Icons Vault — Instructions" } };
@@ -131,10 +76,37 @@ class HIVInstructionsMenu extends foundry.applications.api.ApplicationV2 {
 }
 
 async function showInstructions() {
+  let html = "<p><em>Loading instructions…</em></p>";
+  try {
+    const md = await fetch(`modules/${MODULE_ID}/INSTRUCTIONS.md`).then(r => r.text());
+    // Use marked if available (Foundry v13 ships it), otherwise do a basic conversion
+    if (typeof marked !== "undefined") {
+      html = marked.parse(md);
+    } else {
+      // Minimal Markdown → HTML fallback
+      html = md
+        .replace(/^### (.+)$/gm, "<h3>$1</h3>")
+        .replace(/^## (.+)$/gm, "<h2>$1</h2>")
+        .replace(/^# (.+)$/gm, "<h1>$1</h1>")
+        .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+        .replace(/\*(.+?)\*/g, "<em>$1</em>")
+        .replace(/^[-*] (.+)$/gm, "<li>$1</li>")
+        .replace(/(<li>[^]*?<\/li>\n?)+/g, m => `<ul>${m}</ul>`)
+        .replace(/^> (.+)$/gm, "<blockquote>$1</blockquote>")
+        .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2">$1</a>')
+        .replace(/`(.+?)`/g, "<code>$1</code>")
+        .replace(/^---$/gm, "<hr>")
+        .replace(/\n\n/g, "</p><p>")
+        .replace(/^(?!<[hubi]|<li|<hr|<bl)(.+)$/gm, "<p>$1</p>");
+    }
+  } catch(e) {
+    console.warn(`[${MODULE_ID}] Could not load INSTRUCTIONS.md:`, e);
+    html = "<p>Instructions could not be loaded. See INSTRUCTIONS.md in the module folder.</p>";
+  }
   await foundry.applications.api.DialogV2.wait({
     window:  { title: "Hide Icons Vault — Instructions" },
     classes: ["hiv-dialog"],
-    content: instructionsHTML(),
+    content: `<div class="hiv-instructions hiv-instructions--md">${html}</div>`,
     buttons: [{ action: "close", label: "Close", icon: "fas fa-times", default: true }],
   });
 }
@@ -168,8 +140,14 @@ async function showResetDialog() {
   });
   if (yes) {
     await saveHidden({ layers: [], tools: [] });
+    await saveHiddenTabs([]);
+    // Restore any DOM-hidden tab LIs immediately
+    document.querySelectorAll("#sidebar-tabs li.hiv-tab-hidden").forEach(li => {
+      li.classList.remove("hiv-tab-hidden");
+    });
+    TabVault._updateBadge();
     ui.controls?.render();
-    ui.notifications?.info("Hide Icons Vault: all icons restored.");
+    ui.notifications?.info("Hide Icons Vault: all icons and tabs restored.");
   }
 }
 
@@ -366,7 +344,7 @@ Hooks.once("init", () => {
       console.log(`[${MODULE_ID}] Manual patch OK`);
     }
   }
-  console.log(`[${MODULE_ID}] v1.0.0 init OK`);
+  console.log(`[${MODULE_ID}] v1.0.1 init OK`);
 });
 
 /* ── Vault UI ─────────────────────────────────────────────────────────────── */
@@ -377,13 +355,13 @@ const Vault = {
   init() {
     Hooks.on("renderSceneControls", (_app, html) => this._onRender(html));
 
-    const mo = new MutationObserver(() => {
+    const moInit = new MutationObserver(() => {
       const layers = document.getElementById("scene-controls-layers");
       if (!layers) return;
       if (!layers.querySelector(".hiv-vault-btn")) this._onRender(layers.closest("#scene-controls") ?? document);
-      if (document.querySelector(".hiv-vault-btn")) mo.disconnect();
+      if (document.querySelector(".hiv-vault-btn")) moInit.disconnect();
     });
-    mo.observe(document.body, { childList: true, subtree: true });
+    moInit.observe(document.body, { childList: true, subtree: true });
 
     document.addEventListener("pointerdown", (e) => {
       const panel = document.getElementById("hiv-panel");
@@ -432,9 +410,22 @@ const Vault = {
   _makeDraggable(sc) {
     sc.querySelectorAll("#scene-controls-layers li").forEach(li => {
       if (li.classList.contains("hiv-vault-li")) return;
-      const btn = li.querySelector("button[data-control]");
-      const controlName = btn?.dataset.control;
+      // Try button[data-control] first, then any button child as fallback (for module-injected controls)
+      const btn = li.querySelector("button[data-control]") ?? li.querySelector("button[data-action='control']") ?? li.querySelector("button");
+      const controlName = btn?.dataset.control ?? btn?.dataset.tab ?? btn?.getAttribute("data-control");
       if (!controlName) return;
+      // Also snapshot this li in cache if not already there
+      if (!_fullControlsCache.find(c => c.name === controlName)) {
+        const iconClass = Array.from(btn.classList)
+          .filter(c => c.startsWith("fa-") && c !== "fa-solid" && c !== "fa-regular")
+          .join(" ");
+        _fullControlsCache.push({
+          name: controlName,
+          title: btn.getAttribute("aria-label") ?? btn.dataset.tooltip ?? controlName,
+          icon: iconClass ? `fa-solid ${iconClass.split(" ")[0]}` : "",
+          tools: []
+        });
+      }
       li.setAttribute("draggable", "true");
       if (li._hivDS) li.removeEventListener("dragstart", li._hivDS);
       if (li._hivDE) li.removeEventListener("dragend",   li._hivDE);
@@ -634,19 +625,7 @@ const Vault = {
     }
   },
 
-  _sectionLabel(key) {
-    const d = document.createElement("div"); d.className = "hiv-section-label";
-    d.textContent = game.i18n.localize(key); return d;
-  },
 
-  _toolGroupHeader(ctrl) {
-    const div = document.createElement("div"); div.className = "hiv-tool-group-header";
-    const iconWrap = document.createElement("span"); iconWrap.className = "hiv-tool-group-icon";
-    this._appendIcon(iconWrap, ctrl); div.appendChild(iconWrap);
-    const name = document.createElement("span"); name.className = "hiv-tool-group-name";
-    name.textContent = ctrl.title; div.appendChild(name);
-    return div;
-  },
 
   _makeLayerItem(ctrl) {
     const localTitle = game.i18n.localize(ctrl.title);
@@ -833,7 +812,7 @@ Hooks.once("ready", () => {
   Vault.init();
   if (game.settings.get(MODULE_ID, SETTING_TABS_ENABLED)) TabVault.init();
   game.modules.get(MODULE_ID).api = { Vault, TabVault };
-  console.log(`[${MODULE_ID}] v1.0.0 ready`);
+  console.log(`[${MODULE_ID}] v1.0.1 ready`);
 });
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -847,18 +826,24 @@ function getHiddenTabs() {
 const saveHiddenTabs = (arr) => game.settings.set(MODULE_ID, SETTING_TABS_HID, arr);
 
 async function activateTab(tabName) {
-  // v13 public API (activateTab is deprecated since v13, changeTab is the replacement)
+  // Try standard button[data-tab] first
+  const standardBtn = document.querySelector(`#sidebar-tabs button[data-tab="${CSS.escape(tabName)}"]`);
+  if (standardBtn) { standardBtn.click(); return; }
+
+  // Module-injected tab: find by li id or any button inside the li
+  const liById = document.querySelector(`#sidebar-tabs li#${CSS.escape(tabName)}`);
+  if (liById) {
+    const btn = liById.querySelector("button");
+    if (btn) { btn.click(); return; }
+  }
+
+  // v13 official API fallback
   try {
     if (typeof ui.sidebar?.changeTab === "function") {
       ui.sidebar.changeTab(tabName, "primary");
       return;
     }
-  } catch { /* fallback */ }
-  // Fallback: click the button directly
-  const btn = document.querySelector(`#sidebar-tabs button[data-tab="${CSS.escape(tabName)}"]`);
-  if (btn) { btn.click(); return; }
-  // Last resort: old deprecated API (logs warning but still works in v13)
-  try { await ui.sidebar?.activateTab?.(tabName); } catch {}
+  } catch { /* ignore */ }
 }
 
 const TabVault = {
@@ -932,6 +917,7 @@ const TabVault = {
 
     this._hideTabs(nav);
     this._injectVaultButton(nav);
+
     this._ensurePanel();
     this._updateBadge();
 
@@ -944,18 +930,25 @@ const TabVault = {
     if (!menu) return;
     const snapshot = [];
     menu.querySelectorAll("li:not(.hiv-tab-vault-li)").forEach(li => {
-      const btn = li.querySelector("button[data-tab]");
-      if (!btn) return;
-      const tabName = btn.dataset.tab;
-      if (!tabName) return;
+      // Standard Foundry tabs have button[data-tab]
+      // Module-injected tabs may have different structure (e.g. filepicker-plus uses li id, no data-tab)
+      let btn = li.querySelector("button[data-tab]");
+      let tabName = btn?.dataset.tab;
 
-      // Icon: read from button class (fa-* classes), same pattern as LayerControls
-      const iconClass = Array.from(btn.classList)
+      // Fallback: use li id or any button as identifier
+      if (!tabName) {
+        btn = li.querySelector("button") ?? null;
+        tabName = li.id || li.dataset.tab || li.dataset.tooltip;
+        if (!tabName) return;
+      }
+
+      const iconSource = btn ?? li;
+      const iconClass = Array.from(iconSource.classList ?? [])
         .filter(c => c.startsWith("fa-") && c !== "fa-solid" && c !== "fa-regular" && c !== "fa-brands")
         .map(c => `fa-solid ${c}`)
         .join(" ") || "fa-solid fa-circle-question";
 
-      const label = btn.getAttribute("aria-label") ?? btn.dataset.tooltip ?? tabName;
+      const label = btn.getAttribute?.("aria-label") ?? btn.dataset?.tooltip ?? li.dataset?.tooltip ?? tabName;
 
       snapshot.push({ name: tabName, icon: iconClass, label });
     });
@@ -969,7 +962,8 @@ const TabVault = {
     if (!menu) return;
     menu.querySelectorAll("li:not(.hiv-tab-vault-li)").forEach(li => {
       const btn = li.querySelector("button[data-tab]");
-      if (btn && hiddenTabs.has(btn.dataset.tab)) {
+      const tabName = btn?.dataset.tab ?? li.id ?? li.dataset.tab;
+      if (tabName && hiddenTabs.has(tabName)) {
         li.classList.add("hiv-tab-hidden");
       } else {
         li.classList.remove("hiv-tab-hidden");
@@ -1023,11 +1017,12 @@ const TabVault = {
 
     btn.addEventListener("click", (e) => { e.stopPropagation(); this._togglePanel(li); });
 
-    // Make existing tab LIs draggable
+    // Make existing tab LIs draggable — including module-injected tabs
     menu.querySelectorAll("li:not(.hiv-tab-vault-li)").forEach(li => {
-      const tabBtn = li.querySelector("button[data-tab]");
-      if (!tabBtn) return;
-      const tabName = tabBtn.dataset.tab;
+      const tabBtn = li.querySelector("button[data-tab]") ?? li.querySelector("button");
+      // Determine tab identifier: data-tab on button, or li id, or li data-tab
+      const tabName = tabBtn?.dataset.tab ?? li.id ?? li.dataset.tab;
+      if (!tabName) return;
       li.setAttribute("draggable", "true");
       if (li._hivTabDS) li.removeEventListener("dragstart", li._hivTabDS);
       if (li._hivTabDE) li.removeEventListener("dragend",   li._hivTabDE);
@@ -1194,6 +1189,10 @@ const TabVault = {
     // Hide directly in DOM — no full re-render needed
     const li = document.querySelector(
       `#sidebar-tabs li:not(.hiv-tab-vault-li):has(button[data-tab="${CSS.escape(name)}"])`
+    ) ?? document.querySelector(
+      `#sidebar-tabs li#${CSS.escape(name)}:not(.hiv-tab-vault-li)`
+    ) ?? document.querySelector(
+      `#sidebar-tabs li[data-tab="${CSS.escape(name)}"]:not(.hiv-tab-vault-li)`
     );
     if (li) li.classList.add("hiv-tab-hidden");
     // Update panel and badge
@@ -1208,6 +1207,10 @@ const TabVault = {
     // Restore directly in DOM — no full re-render needed
     const li = document.querySelector(
       `#sidebar-tabs li:not(.hiv-tab-vault-li):has(button[data-tab="${CSS.escape(name)}"])`
+    ) ?? document.querySelector(
+      `#sidebar-tabs li#${CSS.escape(name)}:not(.hiv-tab-vault-li)`
+    ) ?? document.querySelector(
+      `#sidebar-tabs li[data-tab="${CSS.escape(name)}"]:not(.hiv-tab-vault-li)`
     );
     if (li) li.classList.remove("hiv-tab-hidden");
     // Refresh panel and badge in-place
