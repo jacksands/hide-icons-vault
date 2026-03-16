@@ -2,7 +2,7 @@
   "id": "hide-icons-vault",
   "title": "Hide Icons Vault",
   "version": "1.0.1",
-  "description": "Hide Icons Vault lets you hide less used icons from the Layers Control bar and the Sidebar tabs bar, storing them in a compact vault panel. Hidden layer and tool icons can be activated directly from the vault without being restored. Drag to hide, drag back or right-click to restore. Fully per-client \u2014 each user manages their own vault independently.",
+  "description": "Hide Icons Vault lets you hide less used icons from the Layers Control bar and the Sidebar tabs bar, storing them in a compact vault panel. Hidden layer and tool icons can be activated directly from the vault without being restored. Drag to hide, drag back or right-click to restore. Fully per-client — each user manages their own vault independently.",
   "authors": [
     {
       "name": "Jack_Sands"
@@ -22,17 +22,19 @@
     },
     {
       "lang": "pt-BR",
-      "name": "Portugu\u00eas (Brasil)",
+      "name": "Português (Brasil)",
       "path": "lang/pt-BR.json"
     }
   ],
-  "dependencies": [
-    {
-      "id": "lib-wrapper",
-      "type": "module",
-      "reason": "Recommended for safe patching. The module works without it via a built-in fallback."
-    }
-  ],
+  "relationships": {
+    "recommends": [
+      {
+        "id": "lib-wrapper",
+        "type": "module",
+        "compatibility": {}
+      }
+    ]
+  },
   "compatibility": {
     "minimum": "13",
     "verified": "13"
