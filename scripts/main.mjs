@@ -71,8 +71,12 @@ async function sanitizeHiddenData() {
 
 class HIVInstructionsMenu extends foundry.applications.api.ApplicationV2 {
   static DEFAULT_OPTIONS = { id: "hiv-instructions-menu", window: { title: "Hide Icons Vault — Instructions" } };
-  async _renderHTML() { return ""; }
-  async render() { showInstructions(); }
+  async _renderHTML()  { return null; }
+  async _replaceHTML() {}
+  async _onRender(_ctx, _opts) {
+    this.close({ animate: false });
+    showInstructions();
+  }
 }
 
 async function showInstructions() {
@@ -115,8 +119,12 @@ async function showInstructions() {
 
 class HIVResetMenu extends foundry.applications.api.ApplicationV2 {
   static DEFAULT_OPTIONS = { id: "hiv-reset-menu", window: { title: "Hide Icons Vault — Reset" } };
-  async _renderHTML() { return ""; }
-  async render() { showResetDialog(); }
+  async _renderHTML()  { return null; }
+  async _replaceHTML() {}
+  async _onRender(_ctx, _opts) {
+    this.close({ animate: false });
+    showResetDialog();
+  }
 }
 
 async function showResetDialog() {
@@ -777,7 +785,7 @@ const Vault = {
 /* ── Color picker injection for badge color setting ─────────────────────── */
 
 Hooks.on("renderSettingsConfig", (_app, html) => {
-  const root = html instanceof jQuery ? html[0] : html;
+  const root = html instanceof HTMLElement ? html : (html?.[0] ?? html);
   const section = root?.querySelector(`section[data-tab="${MODULE_ID}"]`)
                 ?? root?.querySelector(`[data-tab="${MODULE_ID}"]`);
   if (!section) return;
