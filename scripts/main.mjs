@@ -222,7 +222,7 @@ Hooks.once("init", () => {
   });
 
   game.settings.register(MODULE_ID, SETTING_HID, {
-    scope: "client", config: false, type: Object, default: { layers: [], tools: [] }
+    scope: "world", config: false, type: Object, default: { layers: [], tools: [] }
   });
 
   game.settings.register(MODULE_ID, SETTING_POS, {
@@ -263,7 +263,7 @@ Hooks.once("init", () => {
   });
 
   game.settings.register(MODULE_ID, SETTING_TABS_HID, {
-    scope: "client", config: false, type: Array, default: []
+    scope: "world", config: false, type: Array, default: []
   });
 
   /* ── _prepareContext wrapper ─────────────────────────────────────────── */
