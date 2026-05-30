@@ -1,5 +1,5 @@
 /**
- * Hide Icons Vault – main.mjs – v1.0.1
+ * Hide Icons Vault – main.mjs – v2.1.0
  */
 
 const MODULE_ID   = "hide-icons-vault";
@@ -222,7 +222,7 @@ Hooks.once("init", () => {
   });
 
   game.settings.register(MODULE_ID, SETTING_HID, {
-    scope: "world", config: false, type: Object, default: { layers: [], tools: [] }
+    scope: "user", config: false, type: Object, default: { layers: [], tools: [] }
   });
 
   game.settings.register(MODULE_ID, SETTING_POS, {
@@ -263,7 +263,7 @@ Hooks.once("init", () => {
   });
 
   game.settings.register(MODULE_ID, SETTING_TABS_HID, {
-    scope: "world", config: false, type: Array, default: []
+    scope: "user", config: false, type: Array, default: []
   });
 
   /* ── _prepareContext wrapper ─────────────────────────────────────────── */
@@ -352,7 +352,7 @@ Hooks.once("init", () => {
       console.log(`[${MODULE_ID}] Manual patch OK`);
     }
   }
-  console.log(`[${MODULE_ID}] v1.0.1 init OK`);
+  console.log(`[${MODULE_ID}] v2.1.0 init OK`);
 });
 
 /* ── Vault UI ─────────────────────────────────────────────────────────────── */
@@ -820,7 +820,7 @@ Hooks.once("ready", () => {
   Vault.init();
   if (game.settings.get(MODULE_ID, SETTING_TABS_ENABLED)) TabVault.init();
   game.modules.get(MODULE_ID).api = { Vault, TabVault };
-  console.log(`[${MODULE_ID}] v1.0.1 ready`);
+  console.log(`[${MODULE_ID}] v2.1.0 ready`);
 });
 
 /* ═══════════════════════════════════════════════════════════════════════════
